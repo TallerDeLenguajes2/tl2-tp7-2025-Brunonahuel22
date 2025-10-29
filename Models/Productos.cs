@@ -2,9 +2,9 @@ namespace Tp7.Models
 {
     public class Productos 
     {
-        int idProducto { get; set; }
-        string? descripcion { get; set; }
-        int precio { get; set; }
+       public int idProducto { get; set; }
+       public string? descripcion { get; set; }
+       public int precio { get; set; }
 
         public Productos()
         {}

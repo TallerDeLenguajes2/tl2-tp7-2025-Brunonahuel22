@@ -1,4 +1,4 @@
-namespace Tp7;
+namespace nuevoproyecto;
 
 public class WeatherForecast
 {
