@@ -24,7 +24,7 @@ public class ProductoRepository
 
         comando.ExecuteNonQuery();
 
-        
+
 
         return producto;
 
@@ -35,7 +35,7 @@ public class ProductoRepository
     {
         var lista = new List<Productos>();
         using var connection = new SqliteConnection(cadenaConexion);
-         connection.Open();
+        connection.Open();
         string sql = "SELECT * FROM Productos";
 
         using SqliteCommand comando = new SqliteCommand(sql, connection);
@@ -57,6 +57,76 @@ public class ProductoRepository
 
         return lista;
     }
+
+
+    //Obtener detalles de un Productos por su ID
+    public Productos obtenerDetallePorId(int id)
+    {
+        using SqliteConnection connection = new SqliteConnection(cadenaConexion);
+        connection.Open();
+
+        string sql = "SELECT * FROM Productos WHERE idProducto = @id";
+
+        using SqliteCommand command = new SqliteCommand(sql, connection);
+
+        // despues de comando le puedo sacar el id por parametro
+        command.Parameters.Add(new SqliteParameter("@id", id));
+
+
+
+        // comando ya no se crea como objeto , sino de lo usa comman.
+        using var lector = command.ExecuteReader();
+
+        if (lector.Read())
+        {
+            var p = new Productos
+            {
+                idProducto = Convert.ToInt32(lector["idProducto"]),
+                descripcion = lector["descripcion"].ToString(),
+                precio = Convert.ToInt32(lector["precio"])
+            };
+
+            return p;
+        }
+
+        return null;
+    }
+
+    //Modificar un Producto existente. (recibe un Id y un objeto Producto)
+    public int ModificarProductoExistente(int id, Productos productoAModificar)
+    {
+        SqliteConnection connection = new SqliteConnection(cadenaConexion);
+
+        connection.Open();
+        string sql = "UPDATE Productos SET descripcion = @descripcion, precio = @precio WHERE idProducto = @id";
+
+        using SqliteCommand command = new SqliteCommand(sql, connection);
+
+        command.Parameters.Add(new SqliteParameter("@id", id));
+        command.Parameters.Add(new SqliteParameter("@descripcion", productoAModificar.descripcion));
+        command.Parameters.Add(new SqliteParameter("@precio", productoAModificar.precio));
+
+        int filasAfectadas = command.ExecuteNonQuery();
+
+        return filasAfectadas;
+    }
+
+    //Eliminar un Producto por ID
+    public int EliminarProducto(int id)
+    {
+        using var conexion = new SqliteConnection(cadenaConexion);
+        conexion.Open();
+
+        string sql = "DELETE FROM Productos WHERE idProducto = @Id";
+
+        using var comando = new SqliteCommand(sql, conexion);
+        comando.Parameters.Add(new SqliteParameter("@Id", id));
+
+        int filasAfectadas = comando.ExecuteNonQuery();
+
+        return filasAfectadas;
+    }
+
 
 
 
